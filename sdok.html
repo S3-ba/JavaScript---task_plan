@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista zadań</title>
+    <link rel="stylesheet" href="styl.css">
+</head>
+<body>
+    <div class="container">
+        <div class="layout">
+            <div id="listaZadan" class="lista-zadan"></div>
+            <div class="formularz">
+                <h2>Dodaj zadanie</h2>
+                <input type="text" id="nazwaZadania" placeholder="Nazwa zadania">
+                <select id="priorytet">
+                    <option value="normalne">Normalne</option>
+                    <option value="pilne">Pilne</option>
+                </select>
+                <input type="date" id="dataZadania">
+                <button onclick="dodajZadanie()">Dodaj zadanie</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pobieranie listy zadań z localStorage lub inicjalizacja pustej tablicy
+        let zadania = JSON.parse(localStorage.getItem('zadania')) || [];
+
+        // Funkcja zapisująca zadania do localStorage
+        function zapiszZadania() {
+            localStorage.setItem('zadania', JSON.stringify(zadania));
+        }
+
+        // Funkcja wyświetlająca wszystkie zadania na stronie
+        function wyswietlZadania() {
+            const listaZadan = document.getElementById('listaZadan');
+            listaZadan.innerHTML = ''; // Czyszczenie listy przed ponownym wyrenderowaniem
+            
+            zadania.forEach((zadanie, index) => {
+                // Tworzenie elementu div dla zadania
+                const zadanieDiv = document.createElement('div');
+                zadanieDiv.classList.add('zadanie');
+                
+                // Dodanie klasy "pilne", jeśli zadanie ma wysoki priorytet
+                if (zadanie.priorytet === 'pilne') zadanieDiv.classList.add('pilne');
+                
+                zadanieDiv.draggable = true; // Umożliwienie przeciągania zadania
+                zadanieDiv.dataset.index = index; // Przypisanie indeksu do dataset
+                
+                // Dodanie treści zadania oraz przycisków edycji i usuwania
+                zadanieDiv.innerHTML = `
+                    <div class="tresc-zadania">
+                        <strong>${index + 1}. ${zadanie.nazwa}</strong> - ${zadanie.data ? zadanie.data : 'Brak daty'}
+                    </div>
+                    <div class="akcje-zadania">
+                        <button onclick="edytujZadanie(${index})">Edytuj</button>
+                        <button onclick="usunZadanie(${index})">Usuń</button>
+                    </div>`;
+                
+                // Obsługa przeciągania
+                zadanieDiv.addEventListener('dragstart', rozpocznijPrzeciaganie);
+                zadanieDiv.addEventListener('dragover', zezwolNaPrzeciaganie);
+                zadanieDiv.addEventListener('drop', upuscZadanie);
+                
+                listaZadan.appendChild(zadanieDiv);
+            });
+            zapiszZadania(); // Zapisanie zmian do localStorage
+        }
+
+        // Funkcja dodawania nowego zadania
+        function dodajZadanie() {
+            const nazwa = document.getElementById('nazwaZadania').value;
+            const priorytet = document.getElementById('priorytet').value;
+            const data = document.getElementById('dataZadania').value;
+
+            if (!nazwa) return alert('Podaj nazwę zadania!'); // Sprawdzenie, czy nazwa nie jest pusta
+            
+            zadania.push({ nazwa, priorytet, data }); // Dodanie nowego zadania do tablicy
+            wyswietlZadania(); // Odświeżenie listy
+        }
+
+        // Funkcja edycji zadania
+        function edytujZadanie(index) {
+            const zadanie = zadania[index];
+            
+            // Wstawienie wartości edytowanego zadania do pól formularza
+            document.getElementById('nazwaZadania').value = zadanie.nazwa;
+            document.getElementById('priorytet').value = zadanie.priorytet;
+            document.getElementById('dataZadania').value = zadanie.data;
+            
+            usunZadanie(index); // Usunięcie starej wersji zadania przed edycją
+        }
+
+        // Funkcja usuwania zadania
+        function usunZadanie(index) {
+            zadania.splice(index, 1); // Usunięcie zadania z tablicy
+            wyswietlZadania(); // Odświeżenie listy
+        }
+
+        // Funkcja obsługująca rozpoczęcie przeciągania zadania
+        function rozpocznijPrzeciaganie(event) {
+            event.dataTransfer.setData('text/plain', event.target.dataset.index);
+        }
+
+        // Funkcja pozwalająca na przeciąganie nad innymi elementami
+        function zezwolNaPrzeciaganie(event) {
+            event.preventDefault();
+        }
+
+        // Funkcja obsługująca upuszczenie zadania w nowej pozycji
+        function upuscZadanie(event) {
+            event.preventDefault();
+            
+            const indeksPrzeciagany = event.dataTransfer.getData('text/plain'); // Pobranie indeksu przeciąganego zadania
+            const indeksDocelowy = event.target.closest('.zadanie').dataset.index; // Pobranie indeksu docelowego
+            
+            if (indeksPrzeciagany !== indeksDocelowy) {
+                const przeciaganeZadanie = zadania.splice(indeksPrzeciagany, 1)[0]; // Usunięcie przeciąganego zadania
+                zadania.splice(indeksDocelowy, 0, przeciaganeZadanie); // Wstawienie zadania w nowej pozycji
+                wyswietlZadania(); // Odświeżenie listy
+            }
+        }
+        
+        // Wywołanie funkcji, aby wczytać listę zadań po załadowaniu strony
+        wyswietlZadania();
+    </script>
+</body>
+</html>

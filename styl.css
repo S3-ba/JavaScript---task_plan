@@ -1,0 +1,121 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.layout {
+    display: flex;
+    width: 100%;
+}
+
+.lista-zadan {
+    flex: 2;
+    padding: 20px;
+    border-right: 2px solid #ddd;
+    overflow-y: auto;
+}
+
+.formularz {
+    flex: 1;
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #25405b;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+    border-color: #0056b3;
+}
+
+button {
+    background-color: #c6034b;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: none;
+}
+
+button:hover {
+    background-color: #930137;
+}
+
+.zadanie {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s;
+    cursor: grab;
+}
+
+.zadanie.pilne {
+    background: #c6034b;
+    color: white;
+}
+
+.tresc-zadania {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.akcje-zadania {
+    display: flex;
+    gap: 10px;
+}
+
+.akcje-zadania button {
+    background: #034bc6;
+    color: white;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: none;
+}
+
+.akcje-zadania button:hover {
+    background: #034bc6;
+}
